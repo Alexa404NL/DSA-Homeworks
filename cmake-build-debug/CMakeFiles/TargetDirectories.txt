@@ -1,0 +1,3 @@
+/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list/cmake-build-debug/CMakeFiles/Double_linked_list.dir
+/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list/cmake-build-debug/CMakeFiles/rebuild_cache.dir
