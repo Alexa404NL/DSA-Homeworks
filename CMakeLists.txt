@@ -7,4 +7,5 @@ include_directories(.)
 
 add_executable(Double_linked_list
         linked_list.h
-        main.cpp)
+        main.cpp
+        act2_1.cpp)
