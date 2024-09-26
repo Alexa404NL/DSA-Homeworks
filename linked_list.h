@@ -44,12 +44,15 @@ template <class T>
             tail = nullptr;
             size = 0;
         }
+        //contructor de copia
+        DoublyLinkedList(const DoublyLinkedList &l);
 
         //getter
         int longitud();
 
         // setters
         void imprimeLinkedList();
+        void imprimealreves();
         void insertAtBeginning(T value);
         void insertAtEnd(T value);
         void insertPos(int pos, T value);
@@ -64,12 +67,21 @@ template <class T>
     inline node<T>::node(T data){
         this->data = data;
         this->next = nullptr;
+        this->previous = nullptr;
     }
 
 template <class T>
     inline node<T> *node<T>::getNext(){
         if (next != nullptr)
             return next;
+        else
+            return nullptr;
+    }
+
+template <class T>
+    inline node<T> *node<T>::getPrevious() {
+        if (previous != nullptr)
+            return previous;
         else
             return nullptr;
     }
@@ -89,6 +101,10 @@ template <class T>
         this->next = next;
     }
 
+template <class T>
+    inline void node<T>::setPrevious(node<T> *previous) {
+     this->previous = previous;
+    }
 
 template <class T>
     int DoublyLinkedList<T>::longitud(){
@@ -115,6 +131,18 @@ template <class T>
             current = current->getNext();
         }
 
+        cout << std::endl;
+    }
+
+template <class T>
+    void DoublyLinkedList<T>::imprimealreves() {
+        node<T> *current = tail;
+
+        while (current != nullptr)
+        {
+            cout << current->getData() << " ";
+            current = current->getPrevious();
+        }
         cout << std::endl;
     }
 
