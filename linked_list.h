@@ -5,31 +5,48 @@
 #include <iostream>
 using namespace std;
 
-//nodes
 template <class T>
-    class node
-    {
+class node
+{
+public:
+    //node
+    node(T data);
+    //getters
+    T getData();
+    node<T> *getNext();
+    node<T> *getPrevious();
+    //setters
+    void setData(T data);
+    void setNext(node<T> *next);
+    void setPrevious(node<T> *previous);
+
+private:
+    T data;
+    node<T> *next;
+    node<T> *previous;
+};
+
+//cabeza lista
+template <class T>
+    class headlista{
     public:
         //node
-        node(T data);
+        headlista(T data);
         //getters
         T getData();
-        node<T> *getNext();
-        node<T> *getPrevious();
+        headlista<T> *getNext();
         //setters
         void setData(T data);
-        void setNext(node<T> *next);
-        void setPrevious(node<T> *previous);
+        void setNext(headlista<T> *next);
 
     private:
         T data;
-        node<T> *next;
-        node<T> *previous;
+        headlista<T> *next;
     };
 
 //list
 
-template <class T>
+template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de dato
     class DoublyLinkedList
     {
         node<T> *head;
@@ -45,7 +62,20 @@ template <class T>
             size = 0;
         }
         //contructor de copia
-        DoublyLinkedList(const DoublyLinkedList &l);
+        DoublyLinkedList(const DoublyLinkedList &l){
+            head = l.head;
+            node<T> *current = l.head;
+            if (l.head == nullptr){
+                return;
+            }
+            int value;
+            while (current != nullptr){
+                value=current->getData();
+                insertAtEnd(value);
+                current = current->getNext();
+            }
+            tail=l.tail;
+        }
 
         //getter
         int longitud();
@@ -59,6 +89,8 @@ template <class T>
         void removeFirstNode();
         void removeLastNode();
         void deleteAtPosition(int position);
+        // sobrecarga operador asignacion
+        const DoublyLinkedList<T>& operator=(const DoublyLinkedList &);
     };
 
 // definiciones de la clase node.
@@ -106,6 +138,32 @@ template <class T>
      this->previous = previous;
     }
 
+
+template <class T>
+    const DoublyLinkedList<T>& DoublyLinkedList<T>::operator=(const DoublyLinkedList<T> &L){
+        if (L.size ==0){
+            // lista vacia, no hay que copiar nada.
+            head = nullptr;
+            tail=nullptr;
+            size = 0;
+            return *this;
+        }
+        node<T> *current = L.head;
+        node<T> *ptrcopia = nullptr;
+        node<T> *newNode = new node<T>(current->getData());
+        head = newNode;
+        ptrcopia = newNode;
+        current = current->getNext();
+        for (int i = 1; i < L.size; i++){
+            node<T> *newNode = new node<T>(current->getData());
+            ptrcopia->setNext(newNode);
+            ptrcopia = newNode;
+            current = current->getNext();
+        }
+        size = L.size;
+        return *this;
+    }
+
 template <class T>
     int DoublyLinkedList<T>::longitud(){
         return size;
@@ -115,15 +173,13 @@ template <class T>
     void DoublyLinkedList<T>::imprimeLinkedList(){
         // Se comienza por el nodo de inicio
         node<T> *current = head;
-        if (head == nullptr)
-        {
+        if (head == nullptr){
             cout << "Lista vacia.." << endl;
             return;
         }
         // recorre la lista hasta el final.
         while (current != nullptr)
         {
-
             // Visualiza el dato
             cout << current->getData() << " ";
 
@@ -159,19 +215,21 @@ template <class T>
         node<T> *newNode = new node<T>(value);
 
         // Caso lista vacía
-        if (head == nullptr)
+        if (head == nullptr){
             head = newNode;
+        } else {
 
-        // Recorrer la lista hasta el nodo final...
-        node<T> *current = head;
-        while (current->getNext() != nullptr)
-        {
-            current = current->getNext();
+            // Recorrer la lista hasta el nodo final...
+            node<T> *current = head;
+            while (current->getNext() != nullptr) {
+                current = current->getNext();
+                //previous = previous->getPrevious();
+            }
+
+            // el puntero current está apuntando al nodo final.
+            current->setNext(newNode);
         }
-
-        // el puntero current está apuntando al nodo final.
-        current->setNext(newNode);
-        size++;
+            size++;
     }
 
 template <class T>
