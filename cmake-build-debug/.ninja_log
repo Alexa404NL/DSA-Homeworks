@@ -1,4 +1,12 @@
 # ninja log v5
-1	631	1727372919354912178	CMakeFiles/Double_linked_list.dir/act2_1.cpp.o	74a68e8f1a28c067
-1	1362	1727372920089684019	CMakeFiles/Double_linked_list.dir/main.cpp.o	de6ac4ec66a52862
 1362	1858	1727372920587568623	Double_linked_list	3157c16ee20270ac
+4	881	1727404765129017466	CMakeFiles/Double_linked_list.dir/main.cpp.o	de6ac4ec66a52862
+1	631	1727372919354912178	CMakeFiles/Double_linked_list.dir/act2_1.cpp.o	74a68e8f1a28c067
+0	142	1727404781202349423	build.ninja	5f1dcbf2ae094347
+1	74	1727404781292256912	Double_linked_list	27d0ef49a24d09aa
+2	566	1727404931450544530	CMakeFiles/Double_linked_list.dir/main.cpp.o	de6ac4ec66a52862
+566	640	1727404931529095215	Double_linked_list	27d0ef49a24d09aa
+2	910	1727405205907653647	CMakeFiles/Double_linked_list.dir/main.cpp.o	de6ac4ec66a52862
+916	997	1727405206003375709	Double_linked_list	27d0ef49a24d09aa
+4	838	1727405670922914220	CMakeFiles/Double_linked_list.dir/main.cpp.o	de6ac4ec66a52862
+841	918	1727405671007755041	Double_linked_list	27d0ef49a24d09aa
