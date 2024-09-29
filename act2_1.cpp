@@ -8,7 +8,7 @@ public:
     Node* prev;
     Node* next;
 
-    Node(int data) : data(data), prev(nullptr), next(nullptr) {}
+    Node(int data = 0) : data(data), prev(nullptr), next(nullptr) {}
 };
 
 class DoublyLinkedList {
@@ -16,12 +16,17 @@ public:
     Node* head;
     Node* tail;
 
-    // Default constructor
-    DoublyLinkedList() : head(nullptr), tail(nullptr) {}
+    // Constructor default
+    DoublyLinkedList() {
+        head = new Node(); // Nodo head como nodo centinela
+        tail = nullptr;
+    }
 
-    // Copy constructor
-    DoublyLinkedList(const DoublyLinkedList& other) : head(nullptr), tail(nullptr) {
-        Node* current = other.head;
+    // Constructor copia
+    DoublyLinkedList(const DoublyLinkedList& other) {
+        head = new Node(); // Nodo head como nodo centinela
+        tail = nullptr;
+        Node* current = other.head->next; // Omitir el nodo centinela
         while (current) {
             append(current->data);
             current = current->next;
@@ -31,15 +36,16 @@ public:
     // Destructor
     ~DoublyLinkedList() {
         destroy();
+        delete head; // borrado del nodo centinela
     }
 
-    // Assignment operator overload
+    // Sobrecarga del operador de asignacion
     const DoublyLinkedList& operator=(const DoublyLinkedList& other) {
         if (this == &other) {
-            return *this; // Self-assignment check
+            return *this; // Revision de autoasignacion
         }
-        destroy(); // Clean up existing list
-        Node* current = other.head;
+        destroy(); // Limpieza de la lista actual
+        Node* current = other.head->next; // omitir el nodo centinela
         while (current) {
             append(current->data);
             current = current->next;
@@ -47,11 +53,13 @@ public:
         return *this;
     }
 
-    // Appends a new node with the given data to the end of the list
+    // Agrega un nuevo nodo al final de la lista con el valor dado
     void append(int data) {
         Node* newNode = new Node(data);
-        if (!head) {
-            head = tail = newNode;
+        if (!head->next) { // si la lista esta vacia
+            head->next = newNode;
+            newNode->prev = head;
+            tail = newNode;
         } else {
             tail->next = newNode;
             newNode->prev = tail;
@@ -59,9 +67,9 @@ public:
         }
     }
 
-    // Displays the elements of the list
+    // Muestra los elementos de la lista
     void display() const {
-        Node* current = head;
+        Node* current = head->next; // omitir el nodo centinela
         while (current) {
             cout << current->data << " ";
             current = current->next;
@@ -69,22 +77,22 @@ public:
         cout << endl;
     }
 
-    // Inverts the list and returns a new list with the elements in reverse order
+    // Invierte la lista y regresa una nueva lista con los elementos invertidos
     // Complexity: O(n)
     DoublyLinkedList invertir() const {
         DoublyLinkedList newDll;
         Node* current = tail;
-        while (current) {
+        while (current && current != head) {
             newDll.append(current->data);
             current = current->prev;
         }
         return newDll;
     }
 
-    // Searches for the first occurrence of the given value and returns its position
+    // Busca un elemento en la lista y regresa su posicion
     // Complexity: O(n)
     int buscar(int value) const {
-        Node* current = head;
+        Node* current = head->next; // omitir el nodo centinela
         int position = 0;
         while (current) {
             if (current->data == value) {
@@ -93,16 +101,16 @@ public:
             current = current->next;
             position++;
         }
-        return -1;  // Element not found
+        return -1;  // Elemento no encontrado
     }
 
-    // Updates the value of the node at the given position
+    // Actualiza el valor de un nodo en la posicion dada
     // Complexity: O(n)
     void update(int position, int newValue) {
-        Node* current = head;
-        for (int i = 1; i < position; ++i) {
+        Node* current = head->next; // omitir el nodo centinela
+        for (int i = 0; i < position; ++i) {
             if (!current) {
-                return;  // Position out of bounds
+                return;  // Posicion de nodo invalida
             }
             current = current->next;
         }
@@ -111,13 +119,13 @@ public:
         }
     }
 
-    // Sorts the list using bubble sort
+    // Ordena la lista en orden ascendente usando el algoritmo de Bubble Sort
     // Complexity: O(n^2)
     void ordenar() {
-        if (!head) {
+        if (!head->next) {
             return;
         }
-        Node* current = head;
+        Node* current = head->next; // omitir el nodo centinela
         while (current) {
             Node* index = current->next;
             while (index) {
@@ -130,19 +138,20 @@ public:
         }
     }
 
-    // Destroys the list and frees the memory
+    // Limpia la lista y libera la memoria de los nodos
     void destroy() {
-        Node* current = head;
+        Node* current = head->next; // omitir el nodo centinela
         while (current) {
             Node* next = current->next;
             delete current;
             current = next;
         }
-        head = tail = nullptr;
+        head->next = nullptr;
+        tail = nullptr;
     }
 };
 
-// Usage Example:
+// Ejemplo de uso de la clase DoublyLinkedList:
 int main() {
     DoublyLinkedList dll;
     dll.append(3);
@@ -150,35 +159,49 @@ int main() {
     dll.append(4);
     dll.append(2);
 
-    cout << "Original List:" << endl;
+    cout << "Lista original:" << endl;
     dll.display();
 
-    cout << "Inverted List & original list:" << endl;
+    cout << "Lista invertida y lista original:" << endl;
     DoublyLinkedList invertedDll = dll.invertir();
     invertedDll.display();
     dll.display();
 
+    cout << "Posicion del elemento 4: " << dll.buscar(4) << endl;
 
-    cout << "Position of element 4: " << dll.buscar(4) << endl;
-
-    cout << "Updated List (position 2 to 5):" << endl;
+    cout << "Lista actualizada (posicion 2 a la 5):" << endl;
     dll.update(2, 5);
     dll.display();
 
-    cout << "Sorted List:" << endl;
+    cout << "Lista ordenada:" << endl;
     dll.ordenar();
     dll.display();
 
-    // Testing assignment operator
+    // Pruebas de copia de listas usando el operador de asignacion y el constructor de copia
     DoublyLinkedList dll2;
     dll2 = dll;
-    cout << "Copied List using assignment operator:" << endl;
+    cout << "Lista copiada usando el operador de asignacion:" << endl;
     dll2.display();
 
-    // Testing copy constructor
     DoublyLinkedList dll3(dll);
-    cout << "Copied List using copy constructor:" << endl;
+    cout << "Lista copiada usando el constructor de copia:" << endl;
     dll3.display();
 
     return 0;
 }
+
+// Output
+// Lista original:
+// 3 1 4 2 
+// Lista invertida y lista original:
+// 2 4 1 3 
+// 3 1 4 2 
+// Posicion del elemento 4: 2
+// Lista actualizada (posicion 2 a la 5):
+// 3 1 5 2 
+// Lista ordenada:
+// 1 2 3 5
+// Lista copiada usando el operador de asignacion:
+// 1 2 3 5
+// Lista copiada usando el constructor de copia:
+// 1 2 3 5
