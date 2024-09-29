@@ -49,8 +49,15 @@ cmake_ninja_workdir = /Users/alexnlc/Desktop/Proyectos$ Uni/semestre$ 3/DSA/proy
 
 build cmake_object_order_depends_target_Double_linked_list: phony || CMakeFiles/Double_linked_list.dir
 
-build CMakeFiles/Double_linked_list.dir/main.cpp.o: CXX_COMPILER__Double_linked_list_unscanned_Debug /Users/alexnlc/Desktop/Proyectos$ Uni/semestre$ 3/DSA/proyecto_int/Double-linked-list/main.cpp || cmake_object_order_depends_target_Double_linked_list
-  DEP_FILE = CMakeFiles/Double_linked_list.dir/main.cpp.o.d
+build CMakeFiles/Double_linked_list.dir/linked_list_main.cpp.o: CXX_COMPILER__Double_linked_list_unscanned_Debug /Users/alexnlc/Desktop/Proyectos$ Uni/semestre$ 3/DSA/proyecto_int/Double-linked-list/linked_list_main.cpp || cmake_object_order_depends_target_Double_linked_list
+  DEP_FILE = CMakeFiles/Double_linked_list.dir/linked_list_main.cpp.o.d
+  FLAGS = -g -std=gnu++14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -fcolor-diagnostics
+  INCLUDES = -I"/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list/."
+  OBJECT_DIR = CMakeFiles/Double_linked_list.dir
+  OBJECT_FILE_DIR = CMakeFiles/Double_linked_list.dir
+
+build CMakeFiles/Double_linked_list.dir/act2_1.cpp.o: CXX_COMPILER__Double_linked_list_unscanned_Debug /Users/alexnlc/Desktop/Proyectos$ Uni/semestre$ 3/DSA/proyecto_int/Double-linked-list/act2_1.cpp || cmake_object_order_depends_target_Double_linked_list
+  DEP_FILE = CMakeFiles/Double_linked_list.dir/act2_1.cpp.o.d
   FLAGS = -g -std=gnu++14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -fcolor-diagnostics
   INCLUDES = -I"/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list/."
   OBJECT_DIR = CMakeFiles/Double_linked_list.dir
@@ -64,7 +71,7 @@ build CMakeFiles/Double_linked_list.dir/main.cpp.o: CXX_COMPILER__Double_linked_
 #############################################
 # Link the executable Double_linked_list
 
-build Double_linked_list: CXX_EXECUTABLE_LINKER__Double_linked_list_Debug CMakeFiles/Double_linked_list.dir/main.cpp.o
+build Double_linked_list: CXX_EXECUTABLE_LINKER__Double_linked_list_Debug CMakeFiles/Double_linked_list.dir/linked_list_main.cpp.o CMakeFiles/Double_linked_list.dir/act2_1.cpp.o
   FLAGS = -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk
   OBJECT_DIR = CMakeFiles/Double_linked_list.dir
   POST_BUILD = :

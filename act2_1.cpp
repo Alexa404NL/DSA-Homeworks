@@ -100,7 +100,7 @@ public:
     // Complexity: O(n)
     void update(int position, int newValue) {
         Node* current = head;
-        for (int i = 0; i < position; ++i) {
+        for (int i = 1; i < position; ++i) {
             if (!current) {
                 return;  // Position out of bounds
             }
@@ -153,9 +153,11 @@ int main() {
     cout << "Original List:" << endl;
     dll.display();
 
-    cout << "Inverted List:" << endl;
+    cout << "Inverted List & original list:" << endl;
     DoublyLinkedList invertedDll = dll.invertir();
     invertedDll.display();
+    dll.display();
+
 
     cout << "Position of element 4: " << dll.buscar(4) << endl;
 
