@@ -6,63 +6,44 @@
 using namespace std;
 
 template <class T>
-class node
-{
-public:
-    //node
-    node(T data);
-    //getters
-    T getData();
-    node<T> *getNext();
-    node<T> *getPrevious();
-    //setters
-    void setData(T data);
-    void setNext(node<T> *next);
-    void setPrevious(node<T> *previous);
-
-private:
-    T data;
-    node<T> *next;
-    node<T> *previous;
-};
-
-//cabeza lista
-template <class T>
-    class headlista{
+class node{
     public:
         //node
-        headlista(T data);
+        node(T data);
         //getters
         T getData();
-        headlista<T> *getNext();
+        node<T> *getNext();
+        node<T> *getPrevious();
         //setters
         void setData(T data);
-        void setNext(headlista<T> *next);
+        void setNext(node<T> *next);
+        void setPrevious(node<T> *previous);
 
     private:
         T data;
-        headlista<T> *next;
-    };
+        node<T> *next;
+        node<T> *previous;
+};
+
 
 //list
 
 template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de dato
-    class DoublyLinkedList
-    {
+    class DoublyLinkedList{
         node<T> *head;
-        node<T> *tail;
     private:
         int size;
 
     public:
         //contructor
         DoublyLinkedList(){
+
             head = nullptr;
-            tail = nullptr;
             size = 0;
         }
         //contructor de copia
         DoublyLinkedList(const DoublyLinkedList &l){
+
             head = l.head;
             node<T> *current = l.head;
             if (l.head == nullptr){
@@ -74,13 +55,12 @@ template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de d
                 insertAtEnd(value);
                 current = current->getNext();
             }
-            tail=l.tail;
         }
 
         //getter
         int longitud();
 
-        // setters
+        // métodos y setters
         void imprimeLinkedList();
         void imprimealreves();
         void insertAtBeginning(T value);
@@ -144,7 +124,6 @@ template <class T>
         if (L.size ==0){
             // lista vacia, no hay que copiar nada.
             head = nullptr;
-            tail=nullptr;
             size = 0;
             return *this;
         }
@@ -192,14 +171,24 @@ template <class T>
 
 template <class T>
     void DoublyLinkedList<T>::imprimealreves() {
-        node<T> *current = tail;
-
-        while (current != nullptr)
-        {
-            cout << current->getData() << " ";
-            current = current->getPrevious();
+        node<T>* temp = head;
+        if (temp == nullptr) {
+            cout << "The list is empty." << endl;
+            return;
         }
-        cout << std::endl;
+
+        // Move to the end of the list.
+        while (temp->getNext() != nullptr) {
+            temp = temp->getNext();
+        }
+
+        // Traverse backwards.
+        cout << "Reverse List: ";
+        while (temp != nullptr) {
+            cout << temp->getData() << " ";
+            temp = temp->getPrevious();
+        }
+        cout << endl;
     }
 
 template <class T>
@@ -212,24 +201,18 @@ template <class T>
 
 template <class T>
     void DoublyLinkedList<T>::insertAtEnd(T value){
-        node<T> *newNode = new node<T>(value);
-
-        // Caso lista vacía
-        if (head == nullptr){
+        node<T>* newNode = new node<T>(value);
+        if (head == nullptr) {
             head = newNode;
-        } else {
-
-            // Recorrer la lista hasta el nodo final...
-            node<T> *current = head;
-            while (current->getNext() != nullptr) {
-                current = current->getNext();
-                //previous = previous->getPrevious();
-            }
-
-            // el puntero current está apuntando al nodo final.
-            current->setNext(newNode);
+            return;
         }
-            size++;
+        node<T> *temp = head;
+        while (temp->getNext() != nullptr) {
+            temp = temp->getNext();
+        }
+        temp->setNext(newNode);
+        newNode->setPrevious(temp);
+        size++;
     }
 
 template <class T>

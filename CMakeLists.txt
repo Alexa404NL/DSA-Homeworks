@@ -5,5 +5,4 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(.)
 
-add_executable(Double_linked_list linked_list_main.cpp
-        act2_1.cpp)
+add_executable(Double_linked_list linked_list_main.cpp)
