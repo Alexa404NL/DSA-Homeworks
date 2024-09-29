@@ -1,5 +1,6 @@
-#include <iostream>
+// double linked list con cabeza
 
+#include <iostream>
 using namespace std;
 
 class Node {
@@ -108,7 +109,7 @@ public:
     // Complexity: O(n)
     void update(int position, int newValue) {
         Node* current = head->next; // omitir el nodo centinela
-        for (int i = 0; i < position; ++i) {
+        for (int i = 1; i < position; ++i) {
             if (!current) {
                 return;  // Posicion de nodo invalida
             }

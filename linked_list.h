@@ -1,4 +1,4 @@
-
+// double linked list con cabeza
 #ifndef DOUBLE_LINKED_LIST_LINKED_LIST_H
 #define DOUBLE_LINKED_LIST_LINKED_LIST_H
 
@@ -10,6 +10,7 @@ class node{
     public:
         //node
         node(T data);
+        node();
         //getters
         T getData();
         node<T> *getNext();
@@ -25,28 +26,28 @@ class node{
         node<T> *previous;
 };
 
-
 //list
-
 template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de dato
     class DoublyLinkedList{
         node<T> *head;
+        node<T> *tail;
     private:
         int size;
 
     public:
         //contructor
         DoublyLinkedList(){
-
-            head = nullptr;
+            tail= nullptr;
+            head = new node<T>();
             size = 0;
         }
+
         //contructor de copia
         DoublyLinkedList(const DoublyLinkedList &l){
-
+            tail = l.tail;
             head = l.head;
-            node<T> *current = l.head;
-            if (l.head == nullptr){
+            node<T>* current = l.head->next;
+            if (current == nullptr){
                 return;
             }
             int value;
@@ -57,6 +58,17 @@ template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de d
             }
         }
 
+        // Destructor
+        ~DoublyLinkedList() {
+            node<T>* current = head->getNext(); // omitir el nodo centinela
+            while (current) {
+                node<T>* next = current->getNext();
+                delete current;
+                current = next;
+            }
+            delete head; // borrado del nodo cabeza
+        }
+
         //getter
         int longitud();
 
@@ -65,12 +77,11 @@ template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de d
         void imprimealreves();
         void insertAtBeginning(T value);
         void insertAtEnd(T value);
-        void insertPos(int pos, T value);
-        void removeFirstNode();
-        void removeLastNode();
-        void deleteAtPosition(int position);
+
         // sobrecarga operador asignacion
-        const DoublyLinkedList<T>& operator=(const DoublyLinkedList &);
+        const DoublyLinkedList<T>& operator=(const DoublyLinkedList &L);
+
+        int longitud() const;
     };
 
 // definiciones de la clase node.
@@ -81,6 +92,13 @@ template <class T>
         this->next = nullptr;
         this->previous = nullptr;
     }
+
+template <class T>
+inline node<T>::node(){
+    this->data = T();
+    this->next = nullptr;
+    this->previous = nullptr;
+}
 
 template <class T>
     inline node<T> *node<T>::getNext(){
@@ -109,6 +127,10 @@ template <class T>
     }
 
 template <class T>
+    int DoublyLinkedList<T>::longitud() const{
+        return size;
+    }
+template <class T>
     inline void node<T>::setNext(node<T> *next){
         this->next = next;
     }
@@ -121,31 +143,30 @@ template <class T>
 
 template <class T>
     const DoublyLinkedList<T>& DoublyLinkedList<T>::operator=(const DoublyLinkedList<T> &L){
-        if (L.size ==0){
-            // lista vacia, no hay que copiar nada.
-            head = nullptr;
-            size = 0;
-            return *this;
+        if (this == &L) {
+            return *this; // Revision de autoasignacion
         }
-        node<T> *current = L.head;
-        node<T> *ptrcopia = nullptr;
-        node<T> *newNode = new node<T>(current->getData());
-        head = newNode;
-        ptrcopia = newNode;
-        current = current->getNext();
-        for (int i = 1; i < L.size; i++){
-            node<T> *newNode = new node<T>(current->getData());
-            ptrcopia->setNext(newNode);
-            ptrcopia = newNode;
+        node<T>* temp = head->getNext(); // omitir el nodo centinela
+        while (temp) {
+            node<T> * sig = temp->getNext();
+            delete temp;
+            temp = sig;
+        }
+        head->setNext(nullptr);
+        tail= nullptr;
+        node<T> *current = L.head->getNext(); // omitir el nodo centinela
+        node<T>* ultimo = head;
+        while (current) {
+            T value=current->getData();
+            node<T>* newNode = new node<T>(value);
+            ultimo->setNext(newNode);
+            newNode->setPrevious(ultimo);
+            ultimo = newNode;
             current = current->getNext();
+            tail=newNode;
         }
-        size = L.size;
+        size = L.longitud();
         return *this;
-    }
-
-template <class T>
-    int DoublyLinkedList<T>::longitud(){
-        return size;
     }
 
 template <class T>
@@ -202,121 +223,18 @@ template <class T>
 template <class T>
     void DoublyLinkedList<T>::insertAtEnd(T value){
         node<T>* newNode = new node<T>(value);
-        if (head == nullptr) {
-            head = newNode;
+        if (head->getNext() == nullptr) {
+            head->setNext(newNode);
+            newNode->setPrevious(head);
+            tail = newNode;
             return;
+        } else{
+            tail->setNext(newNode);
+            newNode->setPrevious(tail);
+            tail = newNode;
         }
-        node<T> *temp = head;
-        while (temp->getNext() != nullptr) {
-            temp = temp->getNext();
-        }
-        temp->setNext(newNode);
-        newNode->setPrevious(temp);
-        size++;
     }
 
-template <class T>
-    void DoublyLinkedList<T>::insertPos(int pos, T value){
-        if (pos < 1 || pos > size)
-        {
-            cout << "Posicion no permitida" << endl;
-            return;
-        }
-
-        // Insertar al principio
-        if (pos == 1)
-        {
-            insertAtBeginning(value);
-            return;
-        }
-
-        // Recorrer la lista para encontrar el nodo anterior
-        // al punto de inserción
-        node<T> *prev = head;
-        int count = 1;
-        while (count < pos - 1 && prev != nullptr)
-        {
-            prev = prev->getNext();
-            count++;
-        }
-        // Insertar
-        node<T> *temp = new node<T>(value);
-        temp->setNext(prev->getNext());
-        prev->setNext(temp);
-        size++;
-    }
-
-template <class T>
-    void DoublyLinkedList<T>::removeFirstNode(){
-        if (head == nullptr)
-            return;
-
-        node<T> *temp = head;
-        head = head->getNext();
-        delete temp;
-        size--;
-    }
-
-template <class T>
-    void DoublyLinkedList<T>::removeLastNode() {
-        if (head == nullptr)
-            return;
-
-        // caso de un elemento..
-        if (head->getNext() == nullptr)
-        {
-            delete head;
-            size--;
-            return;
-        }
-
-        // ir hasta el penuntimo elemento.
-        node<T> *second_last = head;
-        while ((second_last->getNext())->getNext() != nullptr)
-            second_last = second_last->getNext();
-
-        // Borrar el ultimo
-        delete second_last->getNext();
-
-        // el penultimo ahora es el último
-        second_last->setNext(nullptr);
-        size--;
-    }
-
-template <class T>
-    void DoublyLinkedList<T>::deleteAtPosition(int position) {
-        // Si la lista esta vacia o la posición no es valida
-        if (head == nullptr || position < 1 || position > size)
-        {
-            return;
-        }
-
-        // If the head needs to be deleted
-        if (position == 1)
-        {
-            node<T> *temp = head;
-            head = head->getNext();
-            delete temp;
-            size--;
-        }
-
-        // recorrer lista hasta el nodo anterior al que se borrará
-        node<T> *current = head;
-        for (int i = 1; i < position - 1 && current != nullptr; i++)
-        {
-            current = current->getNext();
-        }
-
-        // Almacenar direccion nodo a borrar.
-        node<T> *temp = current->getNext();
-
-        // Update the links to bypass the node to be deleted
-        current->setNext(current->getNext()->getNext());
-
-        // Delete the node
-        delete temp;
-        size--;
-    }
 
 
 #endif //DOUBLE_LINKED_LIST_LINKED_LIST_H
