@@ -22,7 +22,7 @@ int main(){
         cout << "Posicion del elemento r: " << dll.buscar("r") << endl;
         cout << "Posicion del elemento w: " << dll.buscar("w") << endl;
 
-        cout << "Lista actualizada (cambiar posicion 2 a valor de 'D'):" << endl;
+        cout << "Lista actualizada (cambiar posicion 2 a valor de 'd'):" << endl;
         dll.update(2, "d");
         dll.imprimeLinkedList();
 

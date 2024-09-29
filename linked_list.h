@@ -78,6 +78,12 @@ template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de d
         void update(int pos, T value);
         void ordenar();
         void insertAtEnd(T value);
+        void insertAtBeginning(T value);
+        void insertPos(int pos, T value);
+        void removeFirstNode();
+        void removeLastNode();
+        T getElement(int position);
+        void deleteAtPosition(int position);
 
         // sobrecarga operador asignacion
         const DoublyLinkedList<T>& operator=(const DoublyLinkedList &L);
@@ -178,6 +184,7 @@ template <class T>
         return *this;
     }
 
+    // complejidad de 0(n)
 template <class T>
     void DoublyLinkedList<T>::imprimeLinkedList(){
         // Se comienza por el nodo de inicio
@@ -197,6 +204,128 @@ template <class T>
         }
 
         cout << std::endl;
+    }
+
+template <class T> // complejidad O(n)
+    T DoublyLinkedList<T>::getElement(int position){
+        T temp;
+        if (position < 1 || position > size)
+        {
+            cout << "Posicion no permitida" << endl;
+            return temp;
+        }
+        // recorrer lista hasta el nodo anterior al que se borrará
+        node<T> *current = head;
+        for (int i = 1; i < position && current != nullptr; i++)
+        {
+            current = current->getNext();
+        }
+        return current->getData();
+    }
+
+template <class T> // complejidad O(1)
+    void DoublyLinkedList<T>::insertAtBeginning(T value){
+        node<T> *newNode = new node<T>(value);
+        newNode->setNext(head);
+        head = newNode;
+        size++;
+    }
+
+
+template <class T>
+    void DoublyLinkedList<T>::insertPos(int pos, T value){
+        if (pos < 1 || pos > size){
+            cout << "Posicion no permitida" << endl;
+            return;
+        }
+
+        // Insertar al principio
+        if (pos == 1){
+            insertAtBeginning(value);
+            return;
+        }
+
+        // Recorrer la lista para encontrar el nodo anterior
+        // al punto de inserción
+        node<T> *prev = head;
+        int count = 1;
+        while (count < pos - 1 && prev != nullptr){
+            prev = prev->getNext();
+            count++;
+        }
+        // Insertar
+        node<T> *temp = new node<T>(value);
+        temp->setNext(prev->getNext());
+        prev->setNext(temp);
+        size++;
+    }
+
+template <class T>
+    void DoublyLinkedList<T>::removeFirstNode() {
+        if (head == nullptr)
+            return;
+
+        node<T> *temp = head;
+        head = head->getNext();
+        delete temp;
+        size--;
+    }
+
+template <class T>
+    void DoublyLinkedList<T>::removeLastNode(){
+        if (head == nullptr)
+            return;
+
+        // caso de un elemento..
+        if (head->getNext() == nullptr){
+            delete head;
+            size--;
+            return;
+        }
+
+        // ir hasta el penuntimo elemento.
+        node<T> *second_last = head;
+        while ((second_last->getNext())->getNext() != nullptr)
+            second_last = second_last->getNext();
+
+        // Borrar el ultimo
+        delete second_last->getNext();
+
+        // el penultimo ahora es el último
+        second_last->setNext(nullptr);
+        size--;
+    }
+
+template <class T>
+    void DoublyLinkedList<T>::deleteAtPosition(int position){
+        // Si la lista esta vacia o la posición no es valida
+        if (head == nullptr || position < 1 || position > size){
+            return;
+        }
+
+        // If the head needs to be deleted
+        if (position == 1){
+            node<T> *temp = head;
+            head = head->getNext();
+            delete temp;
+            size--;
+        }
+
+        // recorrer lista hasta el nodo anterior al que se borrará
+        node<T> *current = head;
+        for (int i = 1; i < position - 1 && current != nullptr; i++){
+            current = current->getNext();
+        }
+
+        // Almacenar direccion nodo a borrar.
+        node<T> *temp = current->getNext();
+
+        // Update the links to bypass the node to be deleted
+        current->setNext(current->getNext()->getNext());
+
+        // Delete the node
+        delete temp;
+        size--;
     }
 
     /*                              Métodos de la tarea                             */
