@@ -46,11 +46,12 @@ template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de d
         DoublyLinkedList(const DoublyLinkedList &l){
             tail = l.tail;
             head = l.head;
-            node<T>* current = l.head->next;
+            size=l.size;
+            node<T>* current = l.head->getNext();
             if (current == nullptr){
                 return;
             }
-            int value;
+            T value;
             while (current != nullptr){
                 value=current->getData();
                 insertAtEnd(value);
@@ -67,20 +68,21 @@ template <class T> //agrehar sobregarga de operador y cabeza como otro tipo de d
                 current = next;
             }
             delete head; // borrado del nodo cabeza
+            size=0;
         }
-
-        //getter
-        int longitud();
 
         // métodos y setters
         void imprimeLinkedList();
-        void imprimealreves();
-        void insertAtBeginning(T value);
+        DoublyLinkedList<T> invertir();
+        int buscar(T value);
+        void update(int pos, T value);
+        void ordenar();
         void insertAtEnd(T value);
 
         // sobrecarga operador asignacion
         const DoublyLinkedList<T>& operator=(const DoublyLinkedList &L);
 
+        int longitud();
         int longitud() const;
     };
 
@@ -94,7 +96,7 @@ template <class T>
     }
 
 template <class T>
-inline node<T>::node(){
+    inline node<T>::node(){
     this->data = T();
     this->next = nullptr;
     this->previous = nullptr;
@@ -127,9 +129,15 @@ template <class T>
     }
 
 template <class T>
-    int DoublyLinkedList<T>::longitud() const{
+    int DoublyLinkedList<T>::longitud() {
         return size;
     }
+
+template <class T>
+    int DoublyLinkedList<T>::longitud() const {
+    return size;
+    }
+
 template <class T>
     inline void node<T>::setNext(node<T> *next){
         this->next = next;
@@ -140,6 +148,7 @@ template <class T>
      this->previous = previous;
     }
 
+//definición de métodos de linked list
 
 template <class T>
     const DoublyLinkedList<T>& DoublyLinkedList<T>::operator=(const DoublyLinkedList<T> &L){
@@ -190,36 +199,76 @@ template <class T>
         cout << std::endl;
     }
 
+    /*                              Métodos de la tarea                             */
+
+// complejidad de 0(n)
 template <class T>
-    void DoublyLinkedList<T>::imprimealreves() {
-        node<T>* temp = head;
-        if (temp == nullptr) {
-            cout << "The list is empty." << endl;
+    DoublyLinkedList<T> DoublyLinkedList<T>::invertir(){
+        DoublyLinkedList<T> copy;
+        if (size == 0) {
+            cout << "Lista vacia" << endl;
+        }   else {
+            node<T> *temp = tail;
+            while (temp != nullptr) {
+                copy.insertAtEnd(temp->getData());
+                temp = temp->getPrevious();
+            }
+        }
+            return copy;
+    }
+
+// complejidad de 0(n)
+template <class T>
+    int DoublyLinkedList<T>::buscar(T value){
+        node<T>* current = head->getNext(); // omitir el nodo centinela
+        int position = 1;
+        while (current) {
+            if (current->getData() == value) {
+                return position;
+            }
+            current = current->getNext();
+            position++;
+        }
+        return -1;  // Elemento no encontrado
+    }
+
+// complejidad de 0(n)
+template <class T>
+    void DoublyLinkedList<T>::update(int pos, T value){
+        node<T>* current = head->getNext(); // omitir el nodo centinela
+        for (int i = 1; i < pos; ++i) {
+            if (!current) {
+                return;  // Posicion de nodo invalida
+            }
+            current = current->getNext();
+        }
+            current->setData(value);
+    }
+
+
+// Ordena la lista en orden ascendente usando el algoritmo de Bubble Sort
+// Complexity: O(n^2)
+template <class T>
+    void DoublyLinkedList<T>::ordenar(){
+        if (!head->getNext()) {
             return;
         }
-
-        // Move to the end of the list.
-        while (temp->getNext() != nullptr) {
-            temp = temp->getNext();
+        node<T>* current = head->getNext(); // omitir el nodo centinela
+        while (current) {
+            node<T>* index = current->getNext();
+            while (index) {
+                if (current->getData() > index->getData()) {
+                    T temp=current->getData();
+                    current->setData(index->getData());
+                    index->setData(temp);
+                }
+                index = index->getNext();
+            }
+            current = current->getNext();
         }
-
-        // Traverse backwards.
-        cout << "Reverse List: ";
-        while (temp != nullptr) {
-            cout << temp->getData() << " ";
-            temp = temp->getPrevious();
-        }
-        cout << endl;
     }
 
-template <class T>
-    void DoublyLinkedList<T>::insertAtBeginning(T value){
-        node<T> *newNode = new node<T>(value);
-        newNode->setNext(head);
-        head = newNode;
-        size++;
-    }
-
+// complejidad de 0(n)
 template <class T>
     void DoublyLinkedList<T>::insertAtEnd(T value){
         node<T>* newNode = new node<T>(value);
@@ -227,11 +276,13 @@ template <class T>
             head->setNext(newNode);
             newNode->setPrevious(head);
             tail = newNode;
+            size++;
             return;
         } else{
             tail->setNext(newNode);
             newNode->setPrevious(tail);
             tail = newNode;
+            size++;
         }
     }
 

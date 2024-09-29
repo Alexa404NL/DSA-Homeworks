@@ -4,21 +4,32 @@
 using namespace std;
 
 int main(){
-        DoublyLinkedList<string>  dll, mort;
+        DoublyLinkedList<string>  dll, inverted;
         dll.insertAtEnd("a");
+        dll.insertAtEnd("z");
         dll.insertAtEnd("c");
-        dll.insertAtEnd("f");
-        dll.insertAtEnd("r");
+        dll.insertAtEnd("w");
 
-        std::cout << "Original List:" << std::endl;
+        cout << "Lista original:" << std::endl;
         dll.imprimeLinkedList();
-        dll.imprimealreves();
 
-        mort=dll;
-        mort.imprimeLinkedList();
-        mort.insertAtEnd(" lol ");
+
+        inverted=dll.invertir();
+        cout << "Lista original & invertida:" << std::endl;
         dll.imprimeLinkedList();
-        mort.imprimeLinkedList();
+        inverted.imprimeLinkedList();
 
-        return 0;
+        cout << "Posicion del elemento r: " << dll.buscar("r") << endl;
+        cout << "Posicion del elemento w: " << dll.buscar("w") << endl;
+
+        cout << "Lista actualizada (cambiar posicion 2 a valor de 'D'):" << endl;
+        dll.update(2, "d");
+        dll.imprimeLinkedList();
+
+        cout << "Lista ordenada:" << endl;
+        dll.ordenar();
+        dll.imprimeLinkedList();
+
+
+    return 0;
 }
