@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <filesystem>
-#include "Bitacora.h"
+#include "hw 1/Bitacora.h"
 #include <sstream>
 using namespace std;
 
