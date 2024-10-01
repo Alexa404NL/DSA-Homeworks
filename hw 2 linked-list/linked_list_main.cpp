@@ -1,3 +1,5 @@
+// double linked list con cabeza
+//Alexa Nohemi Lara C           A01571503
 #include "linked_list.h"
 #include <iostream>
 

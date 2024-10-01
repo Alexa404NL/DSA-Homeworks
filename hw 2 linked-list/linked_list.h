@@ -232,7 +232,7 @@ template <class T> // complejidad O(1)
     }
 
 
-template <class T>
+template <class T> //complejidad O(n)
     void DoublyLinkedList<T>::insertPos(int pos, T value){
         if (pos < 1 || pos > size){
             cout << "Posicion no permitida" << endl;
@@ -260,7 +260,7 @@ template <class T>
         size++;
     }
 
-template <class T>
+template <class T> //complejidad O(1)
     void DoublyLinkedList<T>::removeFirstNode() {
         if (head == nullptr)
             return;
@@ -271,7 +271,7 @@ template <class T>
         size--;
     }
 
-template <class T>
+template <class T> //complejidad O(n)
     void DoublyLinkedList<T>::removeLastNode(){
         if (head == nullptr)
             return;
@@ -296,7 +296,7 @@ template <class T>
         size--;
     }
 
-template <class T>
+template <class T> //complejidad O(n)
     void DoublyLinkedList<T>::deleteAtPosition(int position){
         // Si la lista esta vacia o la posición no es valida
         if (head == nullptr || position < 1 || position > size){
