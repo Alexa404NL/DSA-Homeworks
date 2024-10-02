@@ -3,3 +3,4 @@
 //
 
 #include "queue.h"
+#include "exception.h"
