@@ -1,9 +1,6 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
-#endif //EXCEPTION_H
-
-
 #include <iostream>
 #include <exception>
 #include <string>
@@ -21,3 +18,5 @@ public:
     }
 
 };
+
+#endif //EXCEPTION_H

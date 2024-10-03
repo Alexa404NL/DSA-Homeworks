@@ -1,4 +1,4 @@
-# Install script for directory: /Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list
+# Install script for directory: /Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/DSA-Homeworks
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/proyecto_int/Double-linked-list/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/alexnlc/Desktop/Proyectos Uni/semestre 3/DSA/DSA-Homeworks/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
