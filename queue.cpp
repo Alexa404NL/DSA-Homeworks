@@ -20,8 +20,14 @@ int main() {
     q.enQueue(13);
     q.enQueue(-6);
 
-    cout << "Extrayendo  valor " << q.deQueue() << endl;
-    cout << "Extrayendo  valor " << q.deQueue() << endl;
+    q.mostrar();
+    cout<<endl;
 
+    cout << "Extrayendo valor " << q.deQueue() << endl;
+    q.mostrar();
+    cout<<endl;
+    cout << "Extrayendo valor " << q.deQueue() << endl;
+    q.mostrar();
+    cout<<endl;
     return 0;
 }
