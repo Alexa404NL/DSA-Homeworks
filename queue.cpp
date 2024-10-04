@@ -8,7 +8,7 @@
 
 int main() {
     queue<int> q(5);
-    queue<int> lol(8);
+    queue<int> nojalo(8);
     try{
         q.deQueue();
     }
@@ -21,20 +21,31 @@ int main() {
     q.enQueue(13);
     q.enQueue(-6);
 
+
     q.mostrar();
     cout<<endl;
 
     cout << "Extrayendo valor " << q.deQueue() << endl;
 
     cout << "Extrayendo valor " << q.deQueue() << endl;
+    q.mostrar();
+    cout<<endl;
 
-
-    lol = q;
-    lol.enQueue(1);
-    lol.enQueue(2);
-    lol.enQueue(3);
-    cout<< "lol:"<< endl ;
-    lol.mostrar();
+    nojalo = q;
+    nojalo.enQueue(1);
+    nojalo.enQueue(2);
+    nojalo.enQueue(3);
+    cout<< "nojalo:"<< endl ;
+    nojalo.mostrar();
+    cout<<endl;
+    nojalo.deQueue();
+    nojalo.deQueue();
+    nojalo.mostrar();
+    cout<<endl;
+    nojalo.enQueue(4);
+    nojalo.enQueue(5);
+    nojalo.mostrar();
     cout<<endl;
     return 0;
+    //(,)(,)
 }

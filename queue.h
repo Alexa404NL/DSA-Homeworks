@@ -70,7 +70,7 @@ template <class T>
         else if (frente == -1) /* Se inserta primer elemento */{
             frente = fondo = 0;
             arr[fondo] = value;
-        } else if (fondo == capacity && frente != 0){
+        } else if (fondo == capacity -1 && frente != 0){
             // 2da condicion es redundante. Se incluye por claridad.
             fondo = 0;
             arr[fondo] = value;
@@ -130,8 +130,23 @@ template <class T>
 
 template <class T>
     void queue<T>::mostrar(){
-        for (int i = frente; i <= fondo; i++)
-           cout << arr[i] << " ";
+        if(frente<fondo) {
+            for (int i = frente; i <= fondo; i++) {
+                cout << arr[i] << " ";
+            }
+        } else {
+            for (int i = frente; i>fondo; i++) {
+                cout << arr[i] << " ";
+                if (i == capacity - 1) {
+                    i = 0;
+                }
+            }
+            if (fondo<frente) {
+                for (int i = 0; i <= fondo; i++) {
+                    cout << arr[i] << " ";
+                }
+            }
+        }
     }
 
 template <class T>
