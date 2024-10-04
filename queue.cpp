@@ -8,6 +8,7 @@
 
 int main() {
     queue<int> q(5);
+    queue<int> lol(8);
     try{
         q.deQueue();
     }
@@ -24,10 +25,16 @@ int main() {
     cout<<endl;
 
     cout << "Extrayendo valor " << q.deQueue() << endl;
-    q.mostrar();
-    cout<<endl;
+
     cout << "Extrayendo valor " << q.deQueue() << endl;
-    q.mostrar();
+
+
+    lol = q;
+    lol.enQueue(1);
+    lol.enQueue(2);
+    lol.enQueue(3);
+    cout<< "lol:"<< endl ;
+    lol.mostrar();
     cout<<endl;
     return 0;
 }

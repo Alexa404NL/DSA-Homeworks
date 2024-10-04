@@ -10,7 +10,7 @@ class queue{
 public:
     queue(int cap); // constructor
     queue(const queue &s); // constructor de copia
-    const queue & operator=(const queue &L); //sobrecarga de operador
+    const queue<T> & operator=(const queue &L); //sobrecarga de operador
     ~queue();     // Destructor
     void enQueue(T value); //insertar al final
     T deQueue(); //eliminar
@@ -41,17 +41,18 @@ template <class T>
     }
 
 template <class T>
-    const queue<T> &queue<T>::operator=(const queue<T> &q){
+     const queue<T> & queue<T>:: operator=(const queue<T> &q){
         if (this == &q) {
             return *this; // Revision de autoasignacion
         }
         delete[] arr;
+        capacity=q.capacity;
         arr = new T[capacity];
-        for (int i = 0; i <= q.size; i++)
-            arr[i] = q[i];
         size= q.size;
         frente = q.frente;
         fondo = q.fondo;
+        for (int i = q.frente; i <= q.fondo; i++)
+            arr[i] = q.arr[i];
         return *this;
     }
 
@@ -62,31 +63,71 @@ template <class T>
 
 template <class T>
     void queue<T>::enQueue(T value){
-        if (size==capacity){
+        if ((frente == 0 && fondo == capacity - 1) || ((fondo + 1) % capacity == frente)){
             nuevaException ex("La cola esta llena");
             throw ex;
+        } // cola vacia?
+        else if (frente == -1) /* Se inserta primer elemento */{
+            frente = fondo = 0;
+            arr[fondo] = value;
+        } else if (fondo == capacity && frente != 0){
+            // 2da condicion es redundante. Se incluye por claridad.
+            fondo = 0;
+            arr[fondo] = value;
         }
-        fondo = (fondo + 1)% capacity;
-        if (size==0){
-            frente= (frente + 1)% capacity;
+
+        else{
+            fondo++;
+            arr[fondo] = value;
         }
-        arr[fondo] = value;
-        size += 1;
-        cout << value << " enqueued to queue\n";
+
+    /*
+    if (size==capacity){
+        nuevaException ex("La cola esta llena");
+        throw ex;
     }
+    fondo = (fondo + 1)% capacity;
+    if (size==0){
+        frente= (frente + 1)% capacity;
+    }
+    arr[fondo] = value;
+    size += 1;
+    cout << value << " enqueued to queue\n";*/
+}
 
 // extrae un elemento de la cola
 template <class T>
     T queue<T>::deQueue() {
-        if (size==0){
-            nuevaException ex("La cola esta vacia");
-            throw ex;
-        }
-        T item = arr[frente];
-        frente = (frente + 1)% capacity;
-        size = size - 1;
-        return item;
+
+    T temp;
+    if (frente == -1){
+        nuevaException ex("La cola esta vacia");
+        throw ex;
+        return temp;
     }
+
+    temp = arr[frente];
+    if (frente == fondo){
+        frente = -1;
+        fondo = -1;
+    } else if (frente == capacity - 1)
+        frente = 0;
+    else
+        frente++;
+
+    return temp;
+
+    /*
+    if (size==0){
+        nuevaException ex("La cola esta vacia");
+        throw ex;
+    }
+    T item = arr[frente];
+    frente = (frente + 1)% capacity;
+    size = size - 1;
+    return item;*/
+}
+
 template <class T>
     void queue<T>::mostrar(){
         for (int i = frente; i <= fondo; i++)
@@ -101,6 +142,8 @@ template <class T>
         }
         return arr[frente];
     }
+
+
 
 template <class T>
     bool queue<T>::isEmpty(){
