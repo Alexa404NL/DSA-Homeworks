@@ -138,7 +138,7 @@ template <class T>
             for (int i = frente; i>fondo; i++) {
                 cout << arr[i] << " ";
                 if (i == capacity - 1) {
-                    i = 0;
+                    break;
                 }
             }
             if (fondo<frente) {

@@ -46,6 +46,22 @@ int main() {
     nojalo.enQueue(5);
     nojalo.mostrar();
     cout<<endl;
+    nojalo.deQueue();
+    nojalo.deQueue();
+    nojalo.enQueue(9);
+    nojalo.enQueue(10);
+    nojalo.mostrar();
+    cout<<endl;
+    nojalo.deQueue();
+    nojalo.deQueue();
+    nojalo.enQueue(11);
+    nojalo.enQueue(12);
+    nojalo.mostrar();
+    cout<<endl;
+    nojalo.deQueue();
+    nojalo.deQueue();
+    nojalo.enQueue(13);
+    nojalo.mostrar();
+    cout<<endl;
     return 0;
-    //(,)(,)
 }
