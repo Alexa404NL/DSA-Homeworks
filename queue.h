@@ -21,7 +21,7 @@ public:
 };
 
 
-template <class T>
+template <class T> //O(1)
     queue<T>::queue(int cap){
         frente = fondo = -1;
         size=0;
@@ -29,7 +29,7 @@ template <class T>
         arr = new T[capacity];
     }
 
-template <class T>
+template <class T> //O(1)
     queue<T>::queue(const queue &q){
         frente = q.frente;
         fondo = q.fondo;
@@ -40,7 +40,7 @@ template <class T>
             arr[i] = q[i];
     }
 
-template <class T>
+template <class T> //O(N)
      const queue<T> & queue<T>:: operator=(const queue<T> &q){
         if (this == &q) {
             return *this; // Revision de autoasignacion
@@ -56,12 +56,12 @@ template <class T>
         return *this;
     }
 
-template <class T>
+template <class T> //O(1)
     queue<T>::~queue(){
         delete[] arr;
     }
 
-template <class T>
+template <class T> //O(1)
     void queue<T>::enQueue(T value){
         if ((frente == 0 && fondo == capacity - 1) || ((fondo + 1) % capacity == frente)){
             nuevaException ex("La cola esta llena");
@@ -70,40 +70,27 @@ template <class T>
         else if (frente == -1) /* Se inserta primer elemento */{
             frente = fondo = 0;
             arr[fondo] = value;
+            size++;
         } else if (fondo == capacity -1 && frente != 0){
             // 2da condicion es redundante. Se incluye por claridad.
             fondo = 0;
             arr[fondo] = value;
-        }
-
-        else{
+            size++;
+        }else{
             fondo++;
             arr[fondo] = value;
+            size++;
         }
-
-    /*
-    if (size==capacity){
-        nuevaException ex("La cola esta llena");
-        throw ex;
-    }
-    fondo = (fondo + 1)% capacity;
-    if (size==0){
-        frente= (frente + 1)% capacity;
-    }
-    arr[fondo] = value;
-    size += 1;
-    cout << value << " enqueued to queue\n";*/
 }
 
 // extrae un elemento de la cola
-template <class T>
+template <class T> //O(1)
     T queue<T>::deQueue() {
 
     T temp;
     if (frente == -1){
         nuevaException ex("La cola esta vacia");
         throw ex;
-        return temp;
     }
 
     temp = arr[frente];
@@ -114,21 +101,12 @@ template <class T>
         frente = 0;
     else
         frente++;
+        size--;
 
     return temp;
-
-    /*
-    if (size==0){
-        nuevaException ex("La cola esta vacia");
-        throw ex;
-    }
-    T item = arr[frente];
-    frente = (frente + 1)% capacity;
-    size = size - 1;
-    return item;*/
 }
 
-template <class T>
+template <class T> //O(N)
     void queue<T>::mostrar(){
         if(frente<fondo) {
             for (int i = frente; i <= fondo; i++) {
@@ -138,6 +116,7 @@ template <class T>
             for (int i = frente; i>fondo; i++) {
                 cout << arr[i] << " ";
                 if (i == capacity - 1) {
+                    cout << endl;
                     break;
                 }
             }
@@ -147,26 +126,33 @@ template <class T>
                 }
             }
         }
+        cout << endl;
     }
 
-template <class T>
+template <class T> //O(1)
     T queue<T>::getFront(){
-        if (arr->isEmpty()){
+        if (size==0){
             nuevaException ex("La cola esta vacia");
             throw ex;
         }
-        return arr[frente];
+        T value=arr[frente];
+        return value;
     }
 
 
-
-template <class T>
+template <class T>//O(1)
     bool queue<T>::isEmpty(){
-        return (size == 0);
+       if (size == 0)
+            return true;
+       else
+           return false;
     }
-template <class T>
+template <class T> //O(1)
     bool queue<T>::isFull(){
-        return (size == capacity);
+        if (size == capacity)
+            return true;
+        else
+            return false;
     }
 
 
