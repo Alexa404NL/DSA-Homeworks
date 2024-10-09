@@ -1,0 +1,3 @@
+C:/Users/maant/Desktop/Tec/Semestre 3/Progra/Evidencia 2/cmake-build-debug/CMakeFiles/Evidencia_2.dir
+C:/Users/maant/Desktop/Tec/Semestre 3/Progra/Evidencia 2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/maant/Desktop/Tec/Semestre 3/Progra/Evidencia 2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
