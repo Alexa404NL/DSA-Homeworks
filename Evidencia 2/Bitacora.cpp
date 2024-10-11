@@ -1,11 +1,12 @@
 #include "Bitacora.h"
 #include <sstream>
 #include <iomanip>
+#include <stdexcept>
 
 using namespace std;
 
 const map<string, meses_year> Bitacora::month_map = {
-    {"Jan", Jan}, {"Feb", Feb}, {"Mar", Mar}, {"Abr", Abr},
+    {"Jan", Jan}, {"Feb", Feb}, {"Mar", Mar}, {"Apr", Abr},
     {"May", May}, {"Jun", Jun}, {"Jul", Jul}, {"Aug", Aug},
     {"Sep", Sep}, {"Oct", Oct}, {"Nov", Nov}, {"Dec", Dec}
 };
@@ -75,8 +76,6 @@ string Bitacora::get_msg() const {
     return msg;
 }
 
-//🦆 
-
 bool Bitacora::isEarlierThan(const Bitacora& other) const {
     if (mes != other.mes) return mes < other.mes;
     if (dia != other.dia) return dia < other.dia;
@@ -107,6 +106,30 @@ bool Bitacora::operator>=(const Bitacora& other) const {
     return !(*this < other);
 }
 
+vector<int> Bitacora::splitIP(const string& ip) {
+    vector<int> result;
+    stringstream ss(ip);
+    string segment;
+    while (getline(ss, segment, '.')) {
+        size_t colon_pos = segment.find(':');
+        if (colon_pos != string::npos) {
+            result.push_back(stoi(segment.substr(0, colon_pos)));
+            result.push_back(stoi(segment.substr(colon_pos + 1)));
+        } else {
+            result.push_back(stoi(segment));
+        }
+    }
+    return result;
+}
+
 bool Bitacora::compareIP(const Bitacora& other) const {
-    return dir_ip < other.dir_ip;
+    vector<int> ip1 = splitIP(this->dir_ip);
+    vector<int> ip2 = splitIP(other.dir_ip);
+
+    for (size_t i = 0; i < ip1.size(); ++i) {
+        if (ip1[i] != ip2[i]) {
+            return ip1[i] < ip2[i];
+        }
+    }
+    return false;
 }
