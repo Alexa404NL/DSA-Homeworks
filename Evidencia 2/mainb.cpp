@@ -38,66 +38,47 @@ void freeLogs(vector<Bitacora*>& logs) {
     logs.clear();
 }
 
-void merge(vector<Bitacora*>& logs, int left, int mid, int right) {
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-
-    vector<Bitacora*> L(n1), R(n2);
-
-    for (int i = 0; i < n1; i++)
-        L[i] = logs[left + i];
-    for (int i = 0; i < n2; i++)
-        R[i] = logs[mid + 1 + i];
-
-    int i = 0, j = 0, k = left;
-    while (i < n1 && j < n2) {
-        if (L[i]->compareIP(*R[j])) {
-            logs[k] = L[i];
+int partition(vector<Bitacora*>& logs, int low, int high) {
+    Bitacora* pivot = logs[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (logs[j]->compareIP(*pivot)) {
             i++;
+            swap(logs[i], logs[j]);
+        }
+    }
+    swap(logs[i + 1], logs[high]);
+    return i + 1;
+}
+
+void quickSortLogsByIP(vector<Bitacora*>& logs, int low, int high) {
+    if (low < high) {
+        int pi = partition(logs, low, high);
+        quickSortLogsByIP(logs, low, pi - 1);
+        quickSortLogsByIP(logs, pi + 1, high);
+    }
+}
+
+int binary_search(const vector<Bitacora*>& arr, const string& ip) {
+    int low = 0, high = arr.size() - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid]->get_dir_ip() == ip) {
+            return mid;
+        }
+        if (arr[mid]->get_dir_ip() < ip) {
+            low = mid + 1;
         } else {
-            logs[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-
-    while (i < n1) {
-        logs[k] = L[i];
-        i++;
-        k++;
-    }
-
-    while (j < n2) {
-        logs[k] = R[j];
-        j++;
-        k++;
-    }
-}
-
-void mergeSortLogsByIP(vector<Bitacora*>& logs, int left, int right) {
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-
-        mergeSortLogsByIP(logs, left, mid);
-        mergeSortLogsByIP(logs, mid + 1, right);
-
-        merge(logs, left, mid, right);
-    }
-}
-
-int sequential_search(const vector<Bitacora*>& arr, const string& ip) {
-    for (size_t i = 0; i < arr.size(); ++i) {
-        if (arr[i]->get_dir_ip() == ip) {
-            return i;
+            high = mid - 1;
         }
     }
-    return -1; // Return -1 if the exact IP is not found
+    return -1;
 }
 
 vector<Bitacora*> searchLogs(const vector<Bitacora*>& logs, const string& start_ip, const string& end_ip) {
     vector<Bitacora*> result;
-    int inicio = sequential_search(logs, start_ip);
-    int fin = sequential_search(logs, end_ip);
+    int inicio = binary_search(logs, start_ip);
+    int fin = binary_search(logs, end_ip);
     if (inicio == -1 || fin == -1 || inicio > fin) {
         return result; // Return empty result if indices are invalid
     }
@@ -143,7 +124,7 @@ void countIPOccurrences(const vector<Bitacora*>& logs) {
     });
 
     bool has_repeats = false;
-    cout << "Repeated IP addresses:" << endl;
+    cout << endl << "Repeated IP addresses:" << endl;
     for (const auto& entry : ip_vector) {
         if (entry.second > 1) {
             cout << entry.first << " repeats " << entry.second << " times" << endl;
@@ -172,11 +153,11 @@ int main() {
         return 1;
     }
 
-    // Ordenar los logs por dirección IP usando Merge Sort
-    mergeSortLogsByIP(log, 0, log.size() - 1);
+    // Ordenar los logs por dirección IP usando Quick Sort
+    quickSortLogsByIP(log, 0, log.size() - 1);
 
     // Guardar los logs ordenados en un archivo
-    writeLogsToFile(log, "sorted_bitacora.txt");
+    writeLogsToFile(log, "sorted_bitacora2.txt");
 
     // Pedir al usuario las direcciones IP de inicio y fin para la búsqueda
     string start_ip, end_ip;
