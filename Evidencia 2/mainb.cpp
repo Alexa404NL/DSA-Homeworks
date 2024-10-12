@@ -71,6 +71,9 @@ int binary_search(const vector<Bitacora*>& arr, const string& ip) {
         } else {
             high = mid - 1;
         }
+        if (low==high){
+            return high;
+        }
     }
     return -1;
 }
@@ -172,6 +175,8 @@ int main() {
     // Desplegar resultados de la búsqueda
     if (!search_results.empty()) {
         displayLogs(search_results);
+        // Almacenar en un archivo el resultado del ordenamiento.
+        writeLogsToFile(search_results, "resultados_búsqueda.txt");
     } else {
         cout << "No logs found in the specified IP range." << endl;
     }
