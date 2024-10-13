@@ -59,36 +59,45 @@ void quickSortLogsByIP(vector<Bitacora*>& logs, int low, int high) {
     }
 }
 
-std::vector<int> split(std::string s, std::string delimiter) {
+std::vector<string> split(std::string s, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    int token;
-    std::vector<int> res;
+    string token;
+    std::vector<string> res;
 
     while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
-        token = stoi(s.substr (pos_start, pos_end - pos_start));
+        token = s.substr (pos_start, pos_end - pos_start);
         pos_start = pos_end + delim_len;
         res.push_back (token);
     }
 
-    res.push_back (stoi (s.substr (pos_start)));
+    res.push_back (s.substr (pos_start));
     return res;
 }
 
 int binary_search(const vector<Bitacora*>& arr, const string& ip) {
     string delimiter = ".";
-    vector<int> v1 = split (ip, delimiter);
+    vector<string> v1 = split (ip, delimiter);
 
     int low = 0, high = arr.size() - 1;
     while (low <= high) {
         int mid = low + (high - low) / 2;
-        vector<int> v2 = split (arr[mid]->get_dir_ip(), delimiter);
-        if (v2[0] == v1[0] && v2[1] == v1[1] && v2[2] == v1[2] ) {
-            return mid;
-        }
-        if (v2[0] <= v1[0]) {
-            if(v2[1] < v1[1]){
+        vector<string> v2 = split (arr[mid]->get_dir_ip(), delimiter);
+        if (stoi(v2[0]) == stoi(v1[0])) {
+            if (stoi(v2[1]) == stoi(v1[1])) {
+                if (stoi(v2[2]) == stoi(v1[2])) {
+                    return mid;
+                } else if (stoi(v2[2]) < stoi(v1[2])) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            } else if (stoi(v2[1]) < stoi(v1[1])) {
                 low = mid + 1;
+            } else {
+                high = mid - 1;
             }
+        } else if (stoi(v2[0]) < stoi(v1[0])) {
+            low = mid + 1;
         } else {
             high = mid - 1;
         }
