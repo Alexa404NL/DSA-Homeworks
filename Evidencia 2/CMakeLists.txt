@@ -1,12 +1,10 @@
-cmake_minimum_required(VERSION 3.29)
-project(Evidencia_2)
+cmake_minimum_required(VERSION 3.27)
+project(Double_linked_list)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-include_directories(.)
+include_directories()
 
-add_executable(Evidencia_2
-    Bitacora.cpp
-    Bitacora.h
-    bitacora.txt
-    main.cpp)
+add_executable(Double_linked_list
+        Bitacora.cpp
+        mainb.cpp)
