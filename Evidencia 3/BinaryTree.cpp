@@ -58,7 +58,7 @@ void BinaryTree::findTopIPs(TreeNode* node, std::vector<std::pair<int, std::vect
     findTopIPs(node->right, top_ips, n);
     if (n > 0) {
         top_ips.push_back({node->access_count, node->ips});
-        n -= node->ips.size();
+        n -= 1;
     }
     findTopIPs(node->left, top_ips, n);
 }

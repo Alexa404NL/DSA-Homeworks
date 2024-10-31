@@ -138,7 +138,7 @@ void countIPOccurrences(const vector<Bitacora*>& logs) {
         ip_count[ip]++;
     }
 
-    vector<pair<string, int>> ip_vector(ip_count.begin(), ip_count.end());
+    vector<pair<string, int> > ip_vector(ip_count.begin(), ip_count.end());
     sort(ip_vector.begin(), ip_vector.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
         return b.second < a.second; // Sort in descending order
     });
