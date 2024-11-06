@@ -12,11 +12,15 @@ template <class T> class Grafo {
     bool dirigido;
 
 public:
+
+
+ //O(1)
     Grafo(int n, bool d){
         adj = vector<vector<T> >(n, vector<T>(0, 0));
         dirigido = d;
     }
 
+ //O(1)
     void add_edge(int u, int v) {
         adj[u].push_back(v);
         if (!dirigido) {
@@ -24,6 +28,7 @@ public:
         }
     }
 
+// O(V + E) donde v es el número de nodos y e el de arcos
     void print() {
         for (int i = 0; i < adj.size(); i++) {
             cout << i << ": ";
@@ -35,6 +40,7 @@ public:
         cout << endl;
     }
 
+// complejidad O(u) para dirigidos y O(u+v) si es no dirigido
     void delete_edge(int u, int v){
         for (int i = 0; i < adj[u].size(); i++) {
             if (adj[u][i] == v) {
@@ -53,6 +59,7 @@ public:
         }
     }
 
+  // O(m) donde m es el número de arcos a agregarse
     void loadGraph(int n, int m) {
         if(n <0 || m < 0){
            throw invalid_argument("Los números tienen que ser positivos");
@@ -72,6 +79,7 @@ public:
         }
     }
 
+// complejidad O(V + E) donde v es el número de nodos y e el de arcos
   void bfs(int inicio){
         vector<bool> visited(adj.size(), false);
 
@@ -87,7 +95,7 @@ public:
 
         int vis;
         while (!q.empty()) {
-            
+
             vis = q.front();
             cout << vis << " ";
             q.pop();
@@ -101,18 +109,23 @@ public:
         }
     }
 
+
+// complejidad O(V + E) donde v es el número de nodos y e el de arcos
       void dfsRec(vector<bool> &visitados, int s){
           visitados[s] = true;
           cout << s << " ";
 
-          for (int i = 0; i < adj[s].size(); i++)
-              if (adj[s][i] == 1 && visitados[i] == false)
-                  dfsRec(visitados, i);
+          for (int x : adj[s])
+              if (visitados[x] == false)
+                  dfsRec(visitados, x);
       }
 
 
       void dfs(int s){
           vector<bool> visitados(adj.size(), false);
+          if (s<0 || s>adj.size()){
+              throw invalid_argument("El nodo de inicio es inválido");
+          }
           dfsRec( visitados, s);
       }
 };
@@ -126,8 +139,7 @@ int main (){
         int n = 8;
         // Crear un grafo con 4 vertices
         Grafo<int> g(n, false);
-        Grafo<int> f(n, true);
-
+        Grafo<int> f(n, false);
 
         g.add_edge(0, 3);
         g.add_edge(3, 7);
@@ -144,15 +156,24 @@ int main (){
         g.delete_edge(6, 4);
         g.print();
 
-      //  f.print();
-      //  f.loadGraph(5,6);
-      //  f.print();
+
+        // f.print();
+        //  f.loadGraph(5,6);
+        //  f.print();
+
+        f.add_edge(0, 3);
+        f.add_edge(3, 1);
+        f.add_edge(5, 3);
+        f.add_edge(5, 6);
+        f.add_edge(5, 7);
+        f.add_edge(1, 2);
+        f.add_edge(2, 4);
 
         cout << endl << "BFS Recorrido desde vertice 0 como origen." << endl;
         g.bfs(0);
 
         cout << endl << "DFS Recorrido desde vertice 0 como origen." << endl;
-        g.dfs(0);
+        f.dfs(0);
 
     }
 
