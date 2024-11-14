@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stack>
+#include <vector>
 
 template <typename Key, typename Value>
 class AVLTree {

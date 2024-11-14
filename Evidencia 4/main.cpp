@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <filesystem>
-#include <set>
 #include "Bitacora.h"
 #include <sstream>
 #include <algorithm>
@@ -52,16 +51,18 @@ void freeLogs(vector<Bitacora*>& logs) {
     logs.clear();
 }
 
-AVLTree<string, set<string>> buildAdjacencyList(const vector<Bitacora*>& logs) {
-    AVLTree<string, set<string>> adj_list;
+AVLTree<string, vector<string>> buildAdjacencyList(const vector<Bitacora*>& logs) {
+    AVLTree<string, vector<string>> adj_list;
     for (const auto& log : logs) {
-        auto& dest_set = adj_list[log->get_dir_ip_origin()];
-        dest_set.insert(log->get_dir_ip_dest());
+        auto& dest_vector = adj_list[log->get_dir_ip_origin()];
+        if (find(dest_vector.begin(), dest_vector.end(), log->get_dir_ip_dest()) == dest_vector.end()) {
+            dest_vector.push_back(log->get_dir_ip_dest());
+        }
     }
     return adj_list;
 }
 
-vector<pair<string, int>> calculateFanOut(const AVLTree<string, set<string>>& adj_list) {
+vector<pair<string, int>> calculateFanOut(const AVLTree<string, vector<string>>& adj_list) {
     vector<pair<string, int>> fan_out;
     for (const auto& entry : adj_list) {
         fan_out.push_back(make_pair(entry.first, entry.second.size()));

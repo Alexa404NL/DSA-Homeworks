@@ -1,5 +1,4 @@
 #include "AVLTree.h"
-#include <set>
 
 template <typename Key, typename Value>
 AVLTree<Key, Value>::Node::Node(const Key& k, const Value& v)
@@ -200,4 +199,4 @@ typename AVLTree<Key, Value>::Iterator AVLTree<Key, Value>::end() const {
 }
 
 // Explicit template instantiation
-template class AVLTree<std::string, std::set<std::string>>;
+template class AVLTree<std::string, std::vector<std::string>>;
