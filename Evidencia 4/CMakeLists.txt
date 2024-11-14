@@ -11,4 +11,7 @@ add_executable(Evidencia_4
     Bitacora.cpp
     Bitacora.h
     bitacora.txt
-    main.cpp)
+    main.cpp
+        AVLTree.h
+        AVLTree.cpp
+        main2.cpp)

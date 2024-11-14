@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 #include <filesystem>
-#include <set>
 #include "Bitacora.h"
 #include <sstream>
 #include <algorithm>
-#include "AVLTree.h"
+#include <unordered_map>
+#include "BinaryTree.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -52,24 +52,70 @@ void freeLogs(vector<Bitacora*>& logs) {
     logs.clear();
 }
 
-AVLTree<string, set<string>> buildAdjacencyList(const vector<Bitacora*>& logs) {
-    AVLTree<string, set<string>> adj_list;
+void merge(vector<Bitacora*>& logs, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    vector<Bitacora*> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = logs[left + i];
+    for (int i = 0; i < n2; i++)
+        R[i] = logs[mid + 1 + i];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i]->compareIP(*R[j])) {
+            logs[k] = L[i];
+            i++;
+        } else {
+            logs[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        logs[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        logs[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSortLogsByIP(vector<Bitacora*>& logs, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSortLogsByIP(logs, left, mid);
+        mergeSortLogsByIP(logs, mid + 1, right);
+
+        merge(logs, left, mid, right);
+    }
+}
+
+unordered_map<string, vector<string>> buildAdjacencyList(const vector<Bitacora*>& logs) {
+    unordered_map<string, vector<string>> adj_list;
     for (const auto& log : logs) {
-        auto& dest_set = adj_list[log->get_dir_ip_origin()];
-        dest_set.insert(log->get_dir_ip_dest());
+        adj_list[log->get_dir_ip_origin()].push_back(log->get_dir_ip_dest());
     }
     return adj_list;
 }
 
-vector<pair<string, int>> calculateFanOut(const AVLTree<string, set<string>>& adj_list) {
-    vector<pair<string, int>> fan_out;
+unordered_map<string, int> calculateFanOut(const unordered_map<string, vector<string>>& adj_list) {
+    unordered_map<string, int> fan_out;
     for (const auto& entry : adj_list) {
-        fan_out.push_back(make_pair(entry.first, entry.second.size()));
+        fan_out[entry.first] = entry.second.size();
     }
     return fan_out;
 }
 
-vector<string> findNodesWithHighestFanOut(const vector<pair<string, int>>& fan_out) {
+vector<string> findNodesWithHighestFanOut(const unordered_map<string, int>& fan_out) {
     vector<string> highest_fan_out_nodes;
     int max_fan_out = 0;
     for (const auto& entry : fan_out) {
@@ -84,7 +130,7 @@ vector<string> findNodesWithHighestFanOut(const vector<pair<string, int>>& fan_o
     return highest_fan_out_nodes;
 }
 
-string findBotMaster(const vector<pair<string, int>>& fan_out) {
+string findBotMaster(const unordered_map<string, int>& fan_out) {
     string bot_master;
     int max_fan_out = 0;
     for (const auto& entry : fan_out) {
@@ -94,15 +140,6 @@ string findBotMaster(const vector<pair<string, int>>& fan_out) {
         }
     }
     return bot_master;
-}
-
-int getFanOut(const vector<pair<string, int>>& fan_out, const string& ip) {
-    for (const auto& entry : fan_out) {
-        if (entry.first == ip) {
-            return entry.second;
-        }
-    }
-    return 0;
 }
 
 int main() {
@@ -129,12 +166,12 @@ int main() {
     auto highest_fan_out_nodes = findNodesWithHighestFanOut(fan_out);
     cout << "Nodes with the highest fan-out:" << endl;
     for (const auto& node : highest_fan_out_nodes) {
-        cout << node << " with fan-out " << getFanOut(fan_out, node) << endl;
+        cout << node << " with fan-out " << fan_out[node] << endl;
     }
 
     // Determine the bot master
     string bot_master = findBotMaster(fan_out);
-    cout << "Presumed bot master IP: " << bot_master << " with fan-out " << getFanOut(fan_out, bot_master) << endl;
+    cout << "Presumed bot master IP: " << bot_master << " with fan-out " << fan_out[bot_master] << endl;
 
     // Free logs
     freeLogs(log);
