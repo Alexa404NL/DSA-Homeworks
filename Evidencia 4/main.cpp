@@ -9,6 +9,8 @@
 using namespace std;
 namespace fs = std::filesystem;
 
+vector<string> ips;
+
 std::vector<string> split(std::string s, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
@@ -57,7 +59,6 @@ int binary_search(const vector<string>& arr, const string& ip) {
     }
     return -1;
 }
-
 
 vector<int> splitIP(const string& ip) {
     vector<int> octets;
@@ -122,8 +123,8 @@ void mergeSortLogsByIP(vector<string>& logs, int left, int right) {
     }
 }
 
-vector<vector<string>> leerArchivo(const string& file) {
-    vector<vector<string>> adj;
+vector<vector<string> > leerArchivo(const string& file) {
+    vector<vector<string> > adj;
     ifstream f(file);
     if (!f.is_open()) {
         cerr << "Error opening file: " << file << endl;
@@ -134,7 +135,7 @@ vector<vector<string>> leerArchivo(const string& file) {
     f >> n >> m;
     f.ignore();
 
-    vector<string> ips(n);
+    ips.resize(n);
     for (int i = 0; i < n; ++i) {
         getline(f, ips[i]);
     }
@@ -149,15 +150,57 @@ vector<vector<string>> leerArchivo(const string& file) {
         int pos = binary_search(ips, ip_origin);
         adj[pos].push_back(ip_dest);
         getline(iss, msg);
-        try {
-            continue;
-        } catch (const invalid_argument& e) {
-            cerr << "Error: " << e.what() << " in line: " << l << endl;
-        }
     }
     return adj;
 }
 
+
+void calculateFanout(const vector<vector<string> >& adj, const vector<string>& ips) {
+    vector<int> fanout(ips.size(), 0);
+
+
+    for (const auto& connections : adj) {
+        for (const auto& ipDest : connections) {
+            int pos = binary_search(ips, ipDest);
+            fanout[pos]++;
+        }
+    }
+
+    auto maxout= max_element(fanout.begin(), fanout.end());
+
+    cout << "Fan-out (entradas) para cada IP:" << endl;
+    for (size_t i = 0; i < ips.size(); ++i) {
+        cout << ips[i] << ": " << fanout[i] << endl;
+    }
+
+    cout << "\nIP(s) con el mayor fanout:" << endl;
+    int maxIndex = maxout-fanout.begin();
+    cout << ips[maxIndex] << endl;
+}
+
+
+
+void encontrar_boot(const vector<vector<string> >& adj, const vector<string>& ips) {
+    vector<int> salidas(adj.size(), 0);
+    int maxs = 0;
+
+    for (size_t i = 0; i < adj.size(); ++i) {
+        salidas[i] = adj[i].size();
+        maxs = max(maxs, salidas[i]);
+    }
+
+    /*  cout << "Salidas por cada IP:" << endl;
+        for (size_t i = 0; i < adj.size(); ++i) {
+            cout << ips[i] << ": " << fanOutCounts[i] << endl;
+    }*/
+
+    cout << "\n IP(s) con el mayor número de salidas (" << maxs << "):" << endl;
+    for (size_t i = 0; i < adj.size(); ++i) {
+        if (salidas[i] == maxs) {
+            cout << ips[i] << endl;
+        }
+    }
+}
 
 void freeLogs(vector< vector<string> >& logs) {
     for (auto& entry : logs) {
@@ -167,8 +210,8 @@ void freeLogs(vector< vector<string> >& logs) {
 }
 
 int main() {
-    vector<vector<string>> list_adj;
-   string filename = "bitacora.txt";
+    vector<vector<string> > list_adj;
+    string filename = "bitacora.txt";
 
     try {
         if (fs::exists(filename))
@@ -183,14 +226,16 @@ int main() {
     }
 
 
-   /* for (int i=0; i<list_adj.size(); i++){
-        cout << i << ": ";
-        for (int j=0; j<list_adj[i].size(); j++){
-            cout <<list_adj[i][j] << " ";
-        }
-        cout << endl;
-    }*/
+    /* for (int i=0; i<list_adj.size(); i++){
+         cout << i << ": ";
+         for (int j=0; j<list_adj[i].size(); j++){
+             cout <<list_adj[i][j] << " ";
+         }
+         cout << endl;
+     }*/
 
+    calculateFanout(list_adj, ips);
+    encontrar_boot(list_adj, ips);
     freeLogs(list_adj);
 
     return 0;
