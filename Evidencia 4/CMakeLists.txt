@@ -1,17 +1,6 @@
-cmake_minimum_required(VERSION 3.29)
-project(Evidencia_4)
+cmake_minimum_required(VERSION 3.27)
+project(untitled)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
-include_directories(.)
-
-add_executable(Evidencia_4
-    BinaryTree.cpp
-    BinaryTree.h
-    Bitacora.cpp
-    Bitacora.h
-    bitacora.txt
-    main.cpp
-        AVLTree.h
-        AVLTree.cpp
-        main2.cpp)
+add_executable("./Evidencia 4 main.cpp")

@@ -3,116 +3,176 @@
 #include <string>
 #include <vector>
 #include <filesystem>
-#include "Bitacora.h"
 #include <sstream>
 #include <algorithm>
-#include "AVLTree.h"
 
 using namespace std;
 namespace fs = std::filesystem;
 
-vector<Bitacora*> leerArchivo(const string& file) {
-    vector<Bitacora*> log_file;
+std::vector<string> split(std::string s, std::string delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    string token;
+    std::vector<string> res;
+
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+        token = s.substr (pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back (token);
+    }
+
+    res.push_back (s.substr (pos_start));
+    return res;
+}
+
+int binary_search(const vector<string>& arr, const string& ip) {
+    string delimiter = ".";
+    vector<string> v1 = split (ip, delimiter);
+
+    int low = 0, high = arr.size() - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        vector<string> v2 = split (arr[mid], delimiter);
+        if (stoi(v2[0]) == stoi(v1[0])) {
+            if (stoi(v2[1]) == stoi(v1[1])) {
+                if (stoi(v2[2]) == stoi(v1[2])) {
+                    return mid;
+                } else if (stoi(v2[2]) < stoi(v1[2])) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            } else if (stoi(v2[1]) < stoi(v1[1])) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        } else if (stoi(v2[0]) < stoi(v1[0])) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+        if (low==high){
+            return high;
+        }
+    }
+    return -1;
+}
+
+
+vector<int> splitIP(const string& ip) {
+    vector<int> octets;
+    stringstream ss(ip);
+    string octet;
+    while (getline(ss, octet, '.')) {
+        octets.push_back(stoi(octet));
+    }
+    return octets;
+}
+
+bool compareIPs(const string& ip1, const string& ip2) {
+    vector<int> octets1 = splitIP(ip1);
+    vector<int> octets2 = splitIP(ip2);
+    return octets1 < octets2;
+}
+
+void merge(vector<string>& logs, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    vector<string> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = logs[left + i];
+    for (int i = 0; i < n2; i++)
+        R[i] = logs[mid + 1 + i];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (compareIPs(L[i], R[j])) {
+            logs[k] = L[i];
+            i++;
+        } else {
+            logs[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        logs[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        logs[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSortLogsByIP(vector<string>& logs, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSortLogsByIP(logs, left, mid);
+        mergeSortLogsByIP(logs, mid + 1, right);
+
+        merge(logs, left, mid, right);
+    }
+}
+
+vector<vector<string>> leerArchivo(const string& file) {
+    vector<vector<string>> adj;
     ifstream f(file);
     if (!f.is_open()) {
         cerr << "Error opening file: " << file << endl;
-        return log_file;
+        return adj;
     }
 
     int n, m;
     f >> n >> m;
-    f.ignore(); // Ignore the newline after m
+    f.ignore();
 
     vector<string> ips(n);
     for (int i = 0; i < n; ++i) {
         getline(f, ips[i]);
     }
+    mergeSortLogsByIP(ips, 0,n-1);
+    adj.resize(n);
 
     string l, mes, hora, ip_origin, ip_dest, msg;
     int dia;
     while (getline(f, l)) {
         istringstream iss(l);
         iss >> mes >> dia >> hora >> ip_origin >> ip_dest;
+        int pos = binary_search(ips, ip_origin);
+        adj[pos].push_back(ip_dest);
         getline(iss, msg);
         try {
-            Bitacora* log = new Bitacora(mes, dia, hora, ip_origin, ip_dest, msg);
-            log_file.push_back(log);
+            continue;
         } catch (const invalid_argument& e) {
             cerr << "Error: " << e.what() << " in line: " << l << endl;
         }
     }
-    return log_file;
+    return adj;
 }
 
-void freeLogs(vector<Bitacora*>& logs) {
+
+void freeLogs(vector< vector<string> >& logs) {
     for (auto& entry : logs) {
-        delete entry;
+        entry.clear();
     }
     logs.clear();
 }
 
-AVLTree<string, vector<string>> buildAdjacencyList(const vector<Bitacora*>& logs) {
-    AVLTree<string, vector<string>> adj_list;
-    for (const auto& log : logs) {
-        auto& dest_vector = adj_list[log->get_dir_ip_origin()];
-        if (find(dest_vector.begin(), dest_vector.end(), log->get_dir_ip_dest()) == dest_vector.end()) {
-            dest_vector.push_back(log->get_dir_ip_dest());
-        }
-    }
-    return adj_list;
-}
-
-vector<pair<string, int>> calculateFanOut(const AVLTree<string, vector<string>>& adj_list) {
-    vector<pair<string, int>> fan_out;
-    for (const auto& entry : adj_list) {
-        fan_out.push_back(make_pair(entry.first, entry.second.size()));
-    }
-    return fan_out;
-}
-
-vector<string> findNodesWithHighestFanOut(const vector<pair<string, int>>& fan_out) {
-    vector<string> highest_fan_out_nodes;
-    int max_fan_out = 0;
-    for (const auto& entry : fan_out) {
-        if (entry.second > max_fan_out) {
-            max_fan_out = entry.second;
-            highest_fan_out_nodes.clear();
-            highest_fan_out_nodes.push_back(entry.first);
-        } else if (entry.second == max_fan_out) {
-            highest_fan_out_nodes.push_back(entry.first);
-        }
-    }
-    return highest_fan_out_nodes;
-}
-
-string findBotMaster(const vector<pair<string, int>>& fan_out) {
-    string bot_master;
-    int max_fan_out = 0;
-    for (const auto& entry : fan_out) {
-        if (entry.second > max_fan_out) {
-            max_fan_out = entry.second;
-            bot_master = entry.first;
-        }
-    }
-    return bot_master;
-}
-
-int getFanOut(const vector<pair<string, int>>& fan_out, const string& ip) {
-    for (const auto& entry : fan_out) {
-        if (entry.first == ip) {
-            return entry.second;
-        }
-    }
-    return 0;
-}
-
 int main() {
-    vector<Bitacora*> log;
-    string filename = "bitacora.txt";
+    vector<vector<string>> list_adj;
+   string filename = "bitacora.txt";
 
     try {
         if (fs::exists(filename))
-            log = leerArchivo(filename);
+            list_adj = leerArchivo(filename);
         else {
             cout << "El archivo " << filename << " no existe" << endl;
             return 1;
@@ -122,23 +182,16 @@ int main() {
         return 1;
     }
 
-    // Build adjacency list and calculate fan-out
-    auto adj_list = buildAdjacencyList(log);
-    auto fan_out = calculateFanOut(adj_list);
 
-    // Find nodes with the highest fan-out
-    auto highest_fan_out_nodes = findNodesWithHighestFanOut(fan_out);
-    cout << "Nodes with the highest fan-out:" << endl;
-    for (const auto& node : highest_fan_out_nodes) {
-        cout << node << " with fan-out " << getFanOut(fan_out, node) << endl;
-    }
+   /* for (int i=0; i<list_adj.size(); i++){
+        cout << i << ": ";
+        for (int j=0; j<list_adj[i].size(); j++){
+            cout <<list_adj[i][j] << " ";
+        }
+        cout << endl;
+    }*/
 
-    // Determine the bot master
-    string bot_master = findBotMaster(fan_out);
-    cout << "Presumed bot master IP: " << bot_master << " with fan-out " << getFanOut(fan_out, bot_master) << endl;
-
-    // Free logs
-    freeLogs(log);
+    freeLogs(list_adj);
 
     return 0;
 }
