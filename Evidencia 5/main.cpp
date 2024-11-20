@@ -27,6 +27,10 @@ void readLogFile(const string& filename, HashTable& hashTable) {
         istringstream iss(line);
         iss >> month >> day >> time >> ipOrigin >> ipDest;
         getline(iss, reason);
+        size_t pos = ipOrigin.find(':');
+        if (pos != string::npos) {
+            ipOrigin = ipOrigin.substr(0, pos);
+        }
         hashTable.insert(ipOrigin, ipDest);
     }
 }
